@@ -1,4 +1,4 @@
-# RH PICTURE HOUSE — Now Recommending
+# RH PICTURE HOUSE - Now Recommending
 
 A full-stack movie recommender combining **collaborative filtering** (SVD)
 and **content-based filtering** (genre + title TF-IDF), served by a FastAPI
@@ -62,11 +62,22 @@ npm run dev
 
 ## How recommendations work
 
-| Situation                              | Strategy                                      |
-|-----------------------------------------|------------------------------------------------|
-| Known user with rating history          | Collaborative filtering (SVD), content-boosted re-ranking |
-| New user who names a few liked movies   | Content-based similarity (genre + title)      |
-| New user with no information at all     | Popularity fallback (highest-rated, most-rated movies) |
+Recommendations are driven by three signals — **genre**, **ratings**, and
+**a user's favorite movies** — combined depending on what's known about
+the user:
+
+| Situation                                  | Signal used                                   | Strategy                                      |
+|---------------------------------------------|------------------------------------------------|------------------------------------------------|
+| Browsing a specific genre                    | Genre + aggregate rating                       | Top-rated movies within that genre (`/recommend/genre`) |
+| Known user with rating history               | Ratings (all users' rating patterns)           | Collaborative filtering (SVD), then re-ranked with a content-based boost from the user's own highly-rated movies |
+| New user who names a few favorite movies     | Favorite movies' genres/title similarity       | Content-based similarity — recommends movies like the ones they picked |
+
+In short:
+- **Genre** narrows the catalog to a category and ranks by rating within it.
+- **Ratings** power the collaborative filtering model — it learns from the
+  full user × movie rating matrix, not just one user's history.
+- **Favorite movies** (a user's stated likes) drive content-based
+  similarity for anyone without enough rating history for CF to work.
 
 See `backend/hybrid.py` for the full logic and `backend/evaluate.py` for
 offline evaluation (RMSE/MAE, Precision@K/Recall@K, coverage, diversity,
