@@ -70,7 +70,7 @@ the user:
 |---------------------------------------------|------------------------------------------------|------------------------------------------------|
 | Browsing a specific genre                    | Genre + aggregate rating                       | Top-rated movies within that genre (`/recommend/genre`) |
 | Known user with rating history               | Ratings (all users' rating patterns)           | Collaborative filtering (SVD), then re-ranked with a content-based boost from the user's own highly-rated movies |
-| New user who names a few favorite movies     | Favorite movies' genres/title similarity       | Content-based similarity — recommends movies like the ones they picked |
+|  names a few favorite movies     | Favorite movies' genres/title similarity       | Content-based similarity — recommends movies like the ones they picked |
 
 In short:
 - **Genre** narrows the catalog to a category and ranks by rating within it.
