@@ -1,5 +1,4 @@
 # RH PICTURE HOUSE - Now Recommending
-
 A full-stack movie recommender combining **collaborative filtering** (SVD)
 and **content-based filtering** (genre + title TF-IDF), served by a FastAPI
 backend and a React/Vite frontend styled like a cinema box office.
@@ -62,22 +61,20 @@ npm run dev
 
 ## How recommendations work
 
-Recommendations are driven by three signals — **genre**, **ratings**, and
-**a user's favorite movies** — combined depending on what's known about
-the user:
+Three browsable recommendation modes, each built on a different signal:
 
-| Situation                                  | Signal used                                   | Strategy                                      |
-|---------------------------------------------|------------------------------------------------|------------------------------------------------|
-| Browsing a specific genre                    | Genre + aggregate rating                       | Top-rated movies within that genre (`/recommend/genre`) |
-| Known user with rating history               | Ratings (all users' rating patterns)           | Collaborative filtering (SVD), then re-ranked with a content-based boost from the user's own highly-rated movies |
-|  names a few favorite movies     | Favorite movies' genres/title similarity       | Content-based similarity — recommends movies like the ones they picked |
+| Mode                          | Endpoint                | Signal used                          | How it ranks results                                          |
+|--------------------------------|--------------------------|----------------------------------------|-----------------------------------------------------------------|
+| **Top Rated**                  | `/recommend/top-rated`   | Aggregate rating across all users     | Highest-average, most-rated movies overall (popularity)         |
+| **By Genre**                   | `/recommend/genre`       | Genre + aggregate rating              | Highest-rated movies within the chosen genre                    |
+| **Favorites** (cold-start)     | `/recommend` (with `liked_movie_ids`) | A user's stated favorite movies | Content-based similarity — genre/title match to those favorites |
 
-In short:
-- **Genre** narrows the catalog to a category and ranks by rating within it.
-- **Ratings** power the collaborative filtering model — it learns from the
-  full user × movie rating matrix, not just one user's history.
-- **Favorite movies** (a user's stated likes) drive content-based
-  similarity for anyone without enough rating history for CF to work.
+On top of these, `/recommend` with a known `user_id` also runs
+**collaborative filtering** (SVD) over the full ratings matrix, re-ranked
+with a content-based boost from that user's own highly-rated movies. This
+is the path used once someone has enough rating history for CF to have
+signal — Top Rated, By Genre, and Favorites all cover the cases where it
+doesn't (browsing, or a brand-new user).
 
 See `backend/hybrid.py` for the full logic and `backend/evaluate.py` for
 offline evaluation (RMSE/MAE, Precision@K/Recall@K, coverage, diversity,
@@ -97,3 +94,7 @@ novelty, latency).
 - **Backend:** FastAPI, pandas, scikit-learn, scikit-surprise (SVD)
 - **Frontend:** React, Vite, Tailwind CSS
 - **Data:** MovieLens (`ml-latest-small` / `ml-latest`)
+
+
+
+- 
