@@ -1,0 +1,99 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #12141C;
+  --color-surface: #1B1E2A;
+  --color-surface-raised: #232840;
+  --color-amber: #F5A623;
+  --color-amber-dim: #B9791A;
+  --color-teal: #3FA9A0;
+  --color-paper: #F2EFE6;
+  --color-muted: #8B90A3;
+  --color-danger: #D9634A;
+
+  --font-display: "Bebas Neue", "Arial Narrow", sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+html {
+  background: var(--color-ink);
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background: var(--color-ink);
+  color: var(--color-paper);
+  min-height: 100vh;
+}
+
+/* Marquee bulb strip -- a row of dotted "lights" used as a section divider,
+   echoing the light bulbs that ring a real cinema marquee sign. */
+.bulb-strip {
+  display: flex;
+  gap: 10px;
+  padding: 2px 0;
+}
+.bulb-strip span {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-amber);
+  box-shadow: 0 0 6px 1px color-mix(in srgb, var(--color-amber) 70%, transparent);
+  flex: none;
+}
+
+/* Ticket stub card: notches cut from the left/right edges like a real
+   perforated ticket, with a dashed tear-line separating "what" from "why". */
+.ticket {
+  position: relative;
+  background: var(--color-surface);
+  border-radius: 10px;
+  clip-path: polygon(
+    0% 0%, 100% 0%, 100% 100%, 0% 100%
+  );
+}
+.ticket::before,
+.ticket::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 16px;
+  background: var(--color-ink);
+  border-radius: 999px;
+  z-index: 2;
+}
+.ticket-notch-top {
+  top: -8px;
+}
+.ticket-notch-bottom {
+  bottom: -8px;
+}
+
+.tear-line {
+  border-top: 2px dashed color-mix(in srgb, var(--color-muted) 45%, transparent);
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.4; }
+  94% { opacity: 1; }
+}
+.marquee-flicker {
+  animation: flicker 6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-flicker {
+    animation: none;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-amber);
+  outline-offset: 2px;
+}
